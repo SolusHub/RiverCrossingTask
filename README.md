@@ -1,7 +1,11 @@
 Welcome to my replicated version of the river crossing task!
+Please view in RAW or code version so UML diagram is actually understandable
+
 If you're not familiar with the paper this was based from:
-1. read my review: 
+1. read my review: PaperReview.md
 2. access the paper: Robinson, E., Ellis, T., and Channon, A. (2007). Neuroevolution of agents capable of reactive and deliberative behaviours in novel and dynamic environments. In Advances in Artificial Life: Proceedings of the Ninth European Conference on the Synthesis and Simulation of Living Systems (ECAL 2007), pages 345–354.
+
+
 Here's how the training files are connected:
                         |RcTaskNew|
           /          /       |       \           \
