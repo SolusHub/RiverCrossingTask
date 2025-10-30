@@ -1,31 +1,61 @@
 2.1.	River crossing model
+
 The river crossing model uses separate neural networks; one decides a sub goal for the other network to navigate through the environment. During an episode the model controlled an animat that explored the environment, moving 1 state per time step. For a single iteration 250 animats were used, each initialised with random weights and updated through tournament selection. The model used multiple environments with increasing difficulty as the model wouldn’t converge on the hardest environment with no prior training. 
+
 2.1.1.	Environment
+
  <img width="772" height="281" alt="image" src="https://github.com/user-attachments/assets/a7aeb2df-c23c-43e3-bd64-007a426b73ca" />
+ 
 Figure 1 - Robinson et al. (2007)
+
 Figure 1 showed the 3 environments used in the river crossing model. Each environment was a 20 x 20 state wide 2D space with an object in each state. The square dots were stones, the circle was a resource, the crosses were traps, the 4 dots were water and the blank states were grass. Stone objects would be picked up and placed over water objects to turn the state object into grass. If a stone was picked up, the states object would become grass. The animat could carry 1 stone which could be placed onto the animats current state . Stones could not be placed on traps or other stones.  Water and trap objects could kill the animat and terminate the episode. The state the resource was in was the goal state. Animats were required to reach this state to complete the task. Grass and stone could be freely passed over.
+
 The environments, for each animat, randomly placed objects and the animats starting position. Water objects stayed in the same states, forming a river. The resource was always on the right side of the river and the animat on the left. Stone and traps couldn’t be randomly placed over other objects or the animats random starting state. Environment B and C required the animat to pick up and place stones over water in order to get to the resource. Environment A didn’t require this but still allowed the behaviour to occur. 
+
 2.1.2.	Decision network
+
 Two neural networks were used to decide which state the animat would go to next. One neural network, the decision network (DN), made high level decisions; deciding which sub goals the animat desired. 
+
  <img width="784" height="270" alt="image" src="https://github.com/user-attachments/assets/d2e4b0d5-091b-4627-bfe3-519c60b302a9" />
+ 
 Figure 2 - Robinson et al. (2007)
+
 Figure 2 showed the DN neural network and the tahn activation function used in each neuron. The DN used a feed forward network with a hidden layer, using tahn activated neurons. The input layer had a neuron for each object. If the neuron represented the object of the current state, the neuron received a 1, else the neuron received a 0. The input layer had another neuron to tell whether or not the animat was currently carrying a stone, receiving a 1 for carrying or 0 for not carrying a stone. The output neurons had a neuron for each object except for grass and an output neuron was used to attempt to pick up or drop a stone. Each output neuron had 2 fixed thresholds, 0.3 and -0.3. If the output value was greater than 0.3, the output value resolved to 1. If the output value was less than -0.3, the output value resolved to -1. If the output value was between the threshold values, the output value resolved to 0. The new output values represented whether to desire(1), ignore(0) or avoid(-1) an object. 
+
 2.1.3.	Shunting model
+
 The second neural network, the shunting model (SM), navigated the animat to a desired state. The SM used state values to define how likely a state was or would lead to a desired object. Out of the eight neighbouring states to the animats current state, the animat chose the state with the highest value. State values were calculated using a neuron to represent each state in the environment, using this equation:
+
  <img width="373" height="78" alt="image" src="https://github.com/user-attachments/assets/65e26445-3417-43e3-8fb6-a8a8b663c1fe" />
+ 
 Figure 3 - Stanton and Channon (2015)
+
 Figure 3 was from another paper that made the river crossing task in 3D. the equation was simplified and easier to understand but was the same as the equation used in Robinson et al(2007). Xi was current neuron value, xj was the neighbouring neurons values, Ii was the iota value of the current states object and min(, maxI) was equation between 0 and maximum iota value which was 15. The iota value was the output of the object value from the DN (1,0 or -1) multiplied by 15 to accommodate for the environments size. 
+
 In order to get the new value of the state (xi) the neuron summated all 8 neighbouring state values, summating all positive values and dividing the total over 8 for each neighbouring state. The neuron addended the iota value and restricted the value to no greater than 15. To allow neighbouring state values to impact other states, the equation was repeated for every neuron 50 times; propagating a path of increasing positive values to states with desired objects. The equation was repeated for each neuron 50 times because, after 50 times, the neuron values stabilised (xinew=xi), meaning all positive values had been propagated. Using this equation, Undesirable states couldn’t propagate their negative value to other states and neighbouring desirable states couldn’t propagate their positive values through undesirable states. 
+
 <img width="940" height="347" alt="image" src="https://github.com/user-attachments/assets/981126d8-39b2-4f69-9ee3-092557ffafbb" />
+
 Figure 4 – Robinson et al.(2007)
+
 Figure 4 showed the environment (left) used in chart 1 (middle)  and chart 2 (right). Chart 1 is an activation landscape of all state values after using the SM where: resource = 15, stone = 0, water = 0 and trap =-15. Chart 2 is the same except where: resource = 15, stone = 15, water =-15 and trap =-15. The activation landscapes showed, depending on the output of the DN, how the animat perceived the environment. In chart 1 the animat would run straight to the resource, ignoring the water and terminate by drowning. In chart 2, as the water was undesired, the resource couldn’t propagate a path to the animat or any states left of the river.
+
 2.1.4.	Training
+
 During training, 250 animats were used on the same environment but each animat had random trap, stone, resource and starting positions. If less than 80% of the animats reached the resource state, the weights of the DN were updated. To update the weights, 3 animats were chosen at random, each attempting the same environment with no varying positions of objects for each animat. The worse performing animat was replaced by an offspring of the 2 animats. 
+
 The offspring was created using the chromosomes of the 2 animats. A chromosome was all input neurons to a neuron. For each chromosome, there was a 95% chance the chromosome was inherited from one parent at random, and a 5% chance both chromosome were mixed to make a new chromosome for the offspring. The chromosomes were combined using a single point crossover, with each weight having a 0.1% chance to mutate adding a value between 0 and 0.4 provided the weights’ value was in between -1 and 1.
+
 2.1.5.	Results
+
  <img width="720" height="442" alt="image" src="https://github.com/user-attachments/assets/c5c5257f-1eb9-4ed1-a08d-32c12b2782ae" />
+ 
 Figure 5 – Robinson et al.(2007)
+
 Figure 5 showed the amount of tournaments required to train 80% of the animats for each environment. Accuracy of animats were collected every 250 tournaments, as there were 3 animats tested per tournament, 750 tasks were attempted in the interval. The first environment had over 80% accuracy after 6000 tournaments whilst the second and third environment solved after 13000 tournaments each. 
+
 REFERENCES
+
 •	Robinson, E., Ellis, T., and Channon, A. (2007). Neuroevolution of agents capable of reactive and deliberative behaviours in novel and dynamic environments. In Advances in Artificial Life: Proceedings of the Ninth European Conference on the Synthesis and Simulation of Living Systems (ECAL 2007), pages 345–354.
+
 •	Stanton, A and Channon, A. Incremental Neuroevolution of Reactive and Deliberative 3D Agents. (2015). 
