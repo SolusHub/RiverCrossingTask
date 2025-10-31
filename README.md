@@ -4,7 +4,7 @@ This code uses a feed forward neural network to decide which sub goal to desire(
 
 WHAT I CHANGED:
 I prevented weights from animats that completed the task during that episode from being adjusted during training.
-all animats would go through the environment, and accuracy was tested before training. All 250 animats were then divided into 83 tournaments, leaving 1 animat out, before repeating the process. Animats were split into the same environment per tournament before testing accuracy. 
+all animats would go through the environment, and accuracy was tested before training. All 250 animats were then divided into 83 tournaments, leaving 1 animat out, before repeating the process. 
 
 
 Please view in RAW or code version so UML diagram is actually understandable
