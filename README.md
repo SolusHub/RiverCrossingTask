@@ -2,6 +2,10 @@ Welcome to my replicated version of the river crossing task!
 
 Please view in RAW or code version so UML diagram is actually understandable
 
+TRY OUT THE MODEL:
+Weights have already been initialised to animats that can complete the task.
+To see the animats going through the environment, Run 'VisualEnvironment'
+
 If you're not familiar with the paper this was based from:
 1. read my review: PaperReview.md
 2. access the paper: Robinson, E., Ellis, T., and Channon, A. (2007). Neuroevolution of agents capable of reactive and deliberative behaviours in novel and dynamic environments. In Advances in Artificial Life: Proceedings of the Ninth European Conference on the Synthesis and Simulation of Living Systems (ECAL 2007), pages 345–354.
