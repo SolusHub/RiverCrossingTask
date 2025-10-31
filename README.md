@@ -1,4 +1,5 @@
 Welcome to my replicated version of the river crossing task!
+
 Please view in RAW or code version so UML diagram is actually understandable
 
 If you're not familiar with the paper this was based from:
@@ -24,6 +25,7 @@ R Composes U       /         |      R Composes N    R Composes W
                                       S composes E
                                           |
                                      |Environment|
+                                     
 TO TRAIN THE MODEL:
 1. 'RcTaskNew' line 105 'Task.Begin(1);' - set the parameter to 0 (replace 1 with 0)
 2. 'Environment' line 21 'int EnvoChoice = 2;' - set value to 0 (replace 2 with 0)
